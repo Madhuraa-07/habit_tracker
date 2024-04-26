@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Habit Tracker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            color: rgb(213, 185, 185);
+            display: flex;
+            font-size: x-large;
+            flex-direction: column;
+            align-items: center;
+            background-image: url(/white_bg.avif);
+            height: 150vh;
+
+        }
+
+        h1, h2 {
+            text-align: center;
+        }
+
+        label, input, button {
+            margin-bottom: 10px;
+        }
+
+
+        input[type="text"] {
+        width: 50%; /* Adjusted width for a shorter input box */
+        padding: 10px;
+        border-radius: 10px;
+        background-color: rgb(54, 27, 80);
+        color: rgb(255, 255, 255);
+        }
+
+
+        button {
+            padding: 10px 50px; /* Adjusted padding */
+            background-color: #a282b0;
+            border: none;
+            width: 50%;
+            color: rgb(0, 0, 0);
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: rgb(120, 84, 153);
+        }
+
+        ul {
+
+            width: 200px;
+        }
+
+        li {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 8px;
+            background-color: #3f2153;
+            padding: 10px;
+        }
+
+        li label {
+            margin-right: 10px;
+        }
+
+        li input[type="checkbox"] {
+            margin-right: 10px;
+        }
+        
+        .img-container {
+            margin-top: 20px; /* Add margin to separate from the previous content */
+        }
+
+        .img-container img {
+            width: 135px; /* Adjust the width as needed */
+            height: auto; /* Maintain aspect ratio */
+        }
+        body {
+        height: 150vh;
+        background-image: url(white\ bg.avif);
+        }
+        
+</style>
+</head>
+<body>
+    <h1>Habit Tracker</h1>
+    
+    <label for="habit">Add Habit:</label>
+    <input type="text" id="habit">
+    <button onclick="addHabit()">Add</button>
+    
+    <h2>Habits:</h2>
+    <ul id="habitList"></ul>
+    
+    <script>
+        function addHabit() {
+            const habitInput = document.getElementById("habit");
+            const habitList = document.getElementById("habitList");
+            const habitName = habitInput.value;
+            
+            if (habitName) {
+                const habitItem = document.createElement("li");
+                habitItem.innerHTML = `
+                    <input type="checkbox" id="${habitName}">${habitName}
+                `;
+                habitList.appendChild(habitItem);
+                habitInput.value = "";
+            }
+        }
+    </script>
+    <div class="img-container">
+        <a href="main.html"><img class="img" src="image-removebg-preview (12).png" alt="MAIN"/></a>  
+    </div>
+</body>
+</html>

@@ -1,0 +1,231 @@
+<html>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <head>
+    <title>pomodorotimer</title>
+    <h1>Pomodoro Timer</h1>
+    <style type="text/css">
+
+      h1{
+        font-size: 50px;
+        font-family: 'Bad Script', cursive;
+      }
+
+      body {
+      height: 150vh;
+      background-image:url(white\ bg.avif);
+      }
+      #container {
+        border: 1px solid #2d2057;
+        border-radius: 20px;
+        width: 400px;
+        margin: 30px auto;
+        padding: 20px;
+        text-align: center;
+        background: #2d2057;
+      }
+
+      #timer {
+        color: bisque;
+        font-size: 50px;
+        margin: 10px auto;
+        border: 5px solid bisque;
+        border-radius: 50%;
+        width: 200px;
+        height: 200px;
+        overflow: hidden;
+        position: relative;
+      }
+
+      #time {
+        margin-top: 70px;
+        z-index: 1;
+        position: relative;
+      }
+
+      #filler {
+        background: #ddffcc;
+        height: 0px;
+        width: 200px;
+        position: absolute;
+        bottom: 0;
+      }
+
+      #buttons {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      #buttons-row {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        margin-top: 10px;
+      }
+
+      #buttons button {
+        background: #f0f5ed;
+        color:#2d2057;
+        font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+        cursor: pointer;
+        padding: 5px;
+        width: 90px;
+        margin: 15px auto;
+        font-size: 18px;
+        height: 50px;
+        border-radius: 50px;
+      }
+
+      #buttons button#shortBreak,
+      #buttons button#longBreak {
+        background: rgb(255, 255, 255);
+        width: 45%;
+      }
+
+      #buttons-row button#start,
+      #buttons-row button#pauseResume,
+      #buttons-row button#stop {
+        background:rgb(255, 255, 255);
+        width: 30%;
+      }
+
+      .img-container {
+    margin-top: 20px;
+    margin: 690px; 
+    margin-top: 0px;/* Add margin to separate from the previous content */
+}
+
+.img-container img {
+    width: 135px; /* Adjust the width as needed */
+    height: auto; /* Maintain aspect ratio */
+}
+
+     
+    </style>
+     <link rel="preconnect" href="https://fonts.googleapis.com">
+     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+     <link href="https://fonts.googleapis.com/css2?family=Bad+Script&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <div id="pomodoro-app">
+      <div id="container">
+        <div id="timer">
+          <div id="time">
+            <span id="minutes">25</span>
+            <span id="colon">:</span>
+            <span id="seconds">00</span>
+          </div>
+          <div id="filler"></div>
+        </div>
+
+        <div id="buttons">
+          <button id="shortBreak">Short Break</button>
+          <button id="longBreak">Long Break</button>
+          <div id="buttons-row">
+            <button id="start">Start</button>
+            <button id="pauseResume">Pause</button>
+            <button id="stop">Stop</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script type="text/javascript">
+    var pomodoro = {
+      started: false,
+      paused: false,
+      minutes: 0,
+      seconds: 0,
+      fillerHeight: 0,
+      fillerIncrement: 0,
+      interval: null,
+      minutesDom: null,
+      secondsDom: null,
+      fillerDom: null,
+      init: function () {
+        var self = this;
+        this.minutesDom = document.querySelector('#minutes');
+        this.secondsDom = document.querySelector('#seconds');
+        this.fillerDom = document.querySelector('#filler');
+        this.interval = setInterval(function () {
+          self.intervalCallback.apply(self);
+        }, 1000);
+        document.querySelector('#start').onclick = function () {
+          self.startTimer.apply(self);
+        };
+        document.querySelector('#shortBreak').onclick = function () {
+          self.startShortBreak.apply(self);
+        };
+        document.querySelector('#longBreak').onclick = function () {
+          self.startLongBreak.apply(self);
+        };
+        document.querySelector('#stop').onclick = function () {
+          self.stopTimer.apply(self);
+        };
+        document.querySelector('#pauseResume').onclick = function () {
+          self.pauseResumeTimer.apply(self);
+        };
+      },
+      resetVariables: function (mins, secs, started, paused) {
+        this.minutes = mins;
+        this.seconds = secs;
+        this.started = started;
+        this.paused = paused;
+        this.fillerIncrement = 200 / (this.minutes * 60);
+        this.fillerHeight = 0;
+      },
+      startTimer: function () {
+        this.resetVariables(25, 0, true, false);
+      },
+      startShortBreak: function () {
+        this.resetVariables(5, 0, true, false);
+      },
+      startLongBreak: function () {
+        this.resetVariables(15, 0, true, false);
+      },
+      stopTimer: function () {
+        this.resetVariables(25, 0, false, false);
+        this.updateDom();
+      },
+      pauseResumeTimer: function () {
+        this.paused = !this.paused;
+      },
+      toDoubleDigit: function (num) {
+        if (num < 10) {
+          return '0' + parseInt(num, 10);
+        }
+        return num;
+      },
+      updateDom: function () {
+        this.minutesDom.innerHTML = this.toDoubleDigit(this.minutes);
+        this.secondsDom.innerHTML = this.toDoubleDigit(this.seconds);
+        this.fillerHeight = this.fillerHeight + this.fillerIncrement;
+        this.fillerDom.style.height = this.fillerHeight + 'px';
+      },
+      intervalCallback: function () {
+        if (!this.started || this.paused) return false;
+        if (this.seconds == 0) {
+          if (this.minutes == 0) {
+            this.timerComplete();
+            return;
+          }
+          this.seconds = 59;
+          this.minutes--;
+        } else {
+          this.seconds--;
+        }
+        this.updateDom();
+      },
+      timerComplete: function () {
+        this.started = false;
+        this.fillerHeight = 0;
+      },
+    };
+    window.onload = function () {
+      pomodoro.init();
+    };
+  </script>
+   <div class="img-container">
+    <a href="main.html"><img class="img" src="image-removebg-preview (12).png" alt="MAIN"/></a>  
+</div>
+</html>
